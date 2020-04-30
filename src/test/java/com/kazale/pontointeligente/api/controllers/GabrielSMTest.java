@@ -2,7 +2,6 @@ package com.kazale.pontointeligente.api.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -40,14 +39,21 @@ public class GabrielSMTest {
 	public void setup() {
 		empresa = new Empresa();
 		empresa.setId(1l);
-		empresa.setCnpj("123456");
+		empresa.setCnpj("82198127000121");
 		empresa.setRazaoSocial("Teste razão social");
-		when(service.buscarPorCnpj(anyString())).thenReturn(Optional.of(empresa));
+		when(service.buscarPorCnpj("82198127000121")).thenReturn(Optional.of(empresa));
+		when(service.buscarPorCnpj("123456")).thenReturn(Optional.empty());	
 	}
 
 	@Test
-	public void buscarPorCnpjTest() {
-		assertThat(controller.buscarPorCnpj("123456").getBody()).isNotNull();
-		assertEquals(HttpStatus.OK, controller.buscarPorCnpj("123456").getStatusCode());
+	public void buscarPorCnpjTest() {		
+		assertThat(controller.buscarPorCnpj("82198127000121").getBody()).isNotNull();
+		assertEquals(HttpStatus.OK, controller.buscarPorCnpj("82198127000121").getStatusCode());
+	}
+	
+	@Test
+	public void buscarPorCnpjFalhoTest() {
+		ResponseEntity<Response<EmpresaDto>> res = controller.buscarPorCnpj("123456");
+		assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
 	}
 }
